@@ -1,0 +1,4 @@
+This is a placeholder for the ICO file.
+In a real deployment, you would need a proper Windows ICO file containing multiple icon sizes.
+
+For now, electron-builder will try to use the PNG file as fallback.

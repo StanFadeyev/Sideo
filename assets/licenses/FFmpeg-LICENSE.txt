@@ -1,0 +1,20 @@
+FFmpeg LICENSE
+================
+
+FFmpeg is licensed under the GNU Lesser General Public License (LGPL) version 2.1 or later.
+
+This means:
+- You can use FFmpeg in commercial applications
+- You can redistribute FFmpeg
+- You must provide source code for any modifications to FFmpeg itself
+- You must retain copyright notices
+
+For full license text, see: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+FFmpeg source code and binaries are available at: https://ffmpeg.org/
+
+Binary distribution used in this application is from:
+- Gyan.dev FFmpeg builds (https://www.gyan.dev/ffmpeg/builds/)
+- Or official FFmpeg releases (https://ffmpeg.org/download.html)
+
+No modifications were made to the FFmpeg binaries.
