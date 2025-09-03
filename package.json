@@ -14,7 +14,8 @@
     "build:renderer": "vite build",
     "build:watch": "npm run build:renderer && npm run build:main -- --watch",
     "electron:dev": "wait-on dist/main.js && electron .",
-    "electron:pack": "electron-builder",
+    "electron:pack": "npm run build && node -e \"require('child_process').execSync('create-portable.bat', {stdio: 'inherit'})\"",
+    "electron:pack-builder": "npm run build && electron-builder --config.win.sign=null --config.forceCodeSigning=false",
     "electron:dist": "npm run build && electron-builder",
     "pack:win": "npm run check:build && npm run build && electron-builder --win",
     "pack:portable": "npm run check:build && npm run build && electron-builder --win zip",
@@ -102,19 +103,16 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
           "target": "zip",
           "arch": [
             "x64"
           ]
         }
       ],
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false,
+      "signDlls": false,
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "oneClick": false,
@@ -126,6 +124,7 @@
     "portable": {
       "artifactName": "${productName}-${version}-portable.${ext}"
     },
-    "forceCodeSigning": false
+    "forceCodeSigning": false,
+    "afterSign": null
   }
 }

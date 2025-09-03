@@ -33,11 +33,31 @@ Sideo is a lightweight, offline screen recording application designed to provide
 ## 🛠 Technology Stack
 
 - **Framework**: Electron with TypeScript
-- **UI**: React with custom CSS
+- **Frontend**: React 18.2.0 with TypeScript 5.2.2
+- **UI Components**: shadcn/ui (Radix UI primitives)
+- **Styling**: Tailwind CSS 3.4+ with PostCSS
+- **Icons**: Lucide React
 - **Video Processing**: FFmpeg (external binary)
 - **Audio Processing**: DirectShow (Windows)
-- **Configuration**: JSON-based settings
-- **Build System**: Vite + electron-builder
+- **Configuration**: electron-store (JSON-based)
+- **Build System**: Vite 4.4.9 + electron-builder 24.6.4
+- **Testing**: Jest 29.7.0 with ts-jest
+- **Linting**: ESLint 8.49.0 with TypeScript ESLint
+
+### UI Architecture
+
+**shadcn/ui Integration**: The project uses shadcn/ui as the primary component library, providing:
+- Accessible, unstyled UI primitives from Radix UI
+- Consistent design system with Tailwind CSS
+- Dark mode support (configurable)
+- Professional, modern interface components
+- Type-safe component props with TypeScript
+
+**Key UI Components**:
+- `Button`, `Card`, `Badge` - Core interface elements
+- `Tabs`, `Select`, `Switch` - Settings interface
+- `Dialog`, `Tooltip`, `Progress` - Interactive elements
+- `Label`, `Input`, `Checkbox` - Form controls
 
 ## 🏗 Project Structure
 
@@ -49,13 +69,19 @@ Sideo/
 │   │   └── preload.ts     # Secure IPC bridge
 │   └── renderer/          # React frontend
 │       ├── src/
-│       │   ├── components/    # UI components
-│       │   ├── tabs/         # Settings tabs
+│       │   ├── components/    # React components
+│       │   │   ├── ui/        # shadcn/ui components
+│       │   │   └── tabs/      # Settings tabs
+│       │   ├── lib/           # Utilities & helpers
 │       │   └── App.tsx       # Main application
 │       └── index.html
 ├── assets/                # Icons and resources
+├── scripts/               # Build and utility scripts
 ├── dist/                  # Compiled output
-└── release/              # Distribution packages
+├── release/               # Distribution packages
+├── tailwind.config.js     # Tailwind CSS configuration
+├── components.json        # shadcn/ui configuration
+└── postcss.config.js      # PostCSS configuration
 ```
 
 ## 🚀 Getting Started
@@ -180,23 +206,43 @@ npm run lint
 ### Portable Version
 Self-contained executable with all dependencies included.
 
-### Installer Version  
-Windows Installer (MSI) with system integration:
-- Start menu shortcuts
-- File associations
-- Automatic updates
-
 ### Build Commands
 ```bash
 # Development build
 npm run build
 
-# Distribution packages
-npm run electron:dist
-
-# Portable only
+# Portable package (recommended)
 npm run electron:pack
+
+# Alternative electron-builder (if code signing issues resolved)
+npm run electron:pack-builder
+
+# Check build requirements
+npm run check:build
+
+# Production release scripts
+npm run build:release
+npm run build:release:portable
+npm run build:release:installer
 ```
+
+### Build Notes
+- The project includes workarounds for Windows symbolic link creation issues during packaging
+- Code signing is disabled by default for development builds
+- FFmpeg binary is automatically included in the portable package
+- Build output is saved to the `release/` directory
+
+### Troubleshooting
+
+**Build Issues on Windows**:
+- If you encounter "symbolic link creation" errors during packaging, use `npm run electron:pack` instead of electron-builder directly
+- Ensure Windows Developer Mode is enabled for symbolic link support (optional)
+- Clear electron-builder cache if builds fail: `Remove-Item -Path "$env:LOCALAPPDATA\electron-builder\Cache" -Recurse -Force`
+
+**FFmpeg Not Found**:
+- Download FFmpeg from [official site](https://ffmpeg.org/download.html)
+- Place `ffmpeg.exe` in `C:\ffmpeg\bin\` or configure custom path in Advanced Settings
+- Verify FFmpeg is accessible: `ffmpeg -version`
 
 ## 🛡 Privacy & Security
 
@@ -217,6 +263,13 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 4. Add tests for new functionality
 5. Submit a pull request
 
+### UI Development
+- Components use shadcn/ui with Tailwind CSS for styling
+- Follow the existing component patterns in `src/renderer/src/components/`
+- Use Lucide React for icons: `import { IconName } from 'lucide-react'`
+- Maintain accessibility with Radix UI primitives
+- Test components in both light and dark modes
+
 ### Reporting Issues
 - Use GitHub Issues for bug reports
 - Include system information and logs
@@ -230,6 +283,9 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - [x] Quality profiles
 - [x] System tray interface
 - [x] Settings management
+- [x] shadcn/ui component integration
+- [x] Tailwind CSS styling system
+- [x] Build process optimization
 - [ ] Hardware encoder detection
 - [ ] Recording session management
 - [ ] Performance monitoring
@@ -254,6 +310,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **FFmpeg Team** - For the powerful video processing engine
 - **Electron Team** - For the cross-platform framework
+- **shadcn** - For the excellent UI component library
+- **Radix UI Team** - For accessible, unstyled UI primitives
+- **Tailwind CSS Team** - For the utility-first CSS framework
+- **Lucide** - For the beautiful icon library
 - **OpenAI Whisper** - For offline speech recognition
 - **Open Source Community** - For inspiration and tools
 
