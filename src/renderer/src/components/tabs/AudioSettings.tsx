@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Slider } from '@/components/ui/slider';
+import { Volume2, Mic, Speaker } from 'lucide-react';
 
 const AudioSettings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -12,217 +19,234 @@ const AudioSettings: React.FC = () => {
     systemVolume: 100
   });
 
-  const [audioDevices] = useState([
+  const [systemVolume, setSystemVolume] = useState([settings.systemVolume]);
+  const [micVolume, setMicVolume] = useState([settings.micVolume]);
+
+  const audioDevices = [
     { id: 'stereo-mix', name: 'Stereo Mix (Realtek HD Audio)', type: 'output' },
     { id: 'speakers', name: 'Speakers (High Definition Audio)', type: 'output' },
     { id: 'usb-mic', name: 'Microphone (USB Audio Device)', type: 'input' },
     { id: 'built-in-mic', name: 'Built-in Microphone', type: 'input' }
-  ]);
+  ];
 
   return (
-    <div className="settings-section">
-      <div className="card-header">
-        <h3 className="card-title">Audio Settings</h3>
-        <p className="card-description">
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Volume2 className="h-5 w-5" />
+          Audio Settings
+        </CardTitle>
+        <CardDescription>
           Configure audio sources, mixing, and quality settings
-        </p>
-      </div>
-
-      <div className="card">
-        <h4>Audio Sources</h4>
-        
-        <div className="form-group">
-          <div className="form-check">
-            <input
-              type="checkbox"
-              id="enableSystemAudio"
-              checked={settings.enableSystemAudio}
-              onChange={(e) => setSettings(prev => ({ 
-                ...prev, 
-                enableSystemAudio: e.target.checked 
-              }))}
-            />
-            <label htmlFor="enableSystemAudio">
-              <strong>Capture System Audio</strong> (Desktop sounds, music, etc.)
-            </label>
-          </div>
-
-          {settings.enableSystemAudio && (
-            <div className="ml-4">
-              <label className="form-label">System Audio Device</label>
-              <select
-                className="form-control form-select"
-                value={settings.systemDevice}
-                onChange={(e) => setSettings(prev => ({ 
-                  ...prev, 
-                  systemDevice: e.target.value 
-                }))}
-              >
-                {audioDevices
-                  .filter(device => device.type === 'output')
-                  .map(device => (
-                    <option key={device.id} value={device.name}>
-                      {device.name}
-                    </option>
-                  ))}
-              </select>
-              
-              <div className="form-group mt-2">
-                <label className="form-label">System Audio Volume: {settings.systemVolume}%</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={settings.systemVolume}
-                  onChange={(e) => setSettings(prev => ({ 
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Audio Sources</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enableSystemAudio"
+                  checked={settings.enableSystemAudio}
+                  onCheckedChange={(checked) => setSettings(prev => ({ 
                     ...prev, 
-                    systemVolume: parseInt(e.target.value) 
+                    enableSystemAudio: !!checked 
                   }))}
                 />
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="form-group">
-          <div className="form-check">
-            <input
-              type="checkbox"
-              id="enableMicAudio"
-              checked={settings.enableMicAudio}
-              onChange={(e) => setSettings(prev => ({ 
-                ...prev, 
-                enableMicAudio: e.target.checked 
-              }))}
-            />
-            <label htmlFor="enableMicAudio">
-              <strong>Capture Microphone</strong> (Your voice, commentary)
-            </label>
-          </div>
-
-          {settings.enableMicAudio && (
-            <div className="ml-4">
-              <label className="form-label">Microphone Device</label>
-              <select
-                className="form-control form-select"
-                value={settings.micDevice}
-                onChange={(e) => setSettings(prev => ({ 
-                  ...prev, 
-                  micDevice: e.target.value 
-                }))}
-              >
-                {audioDevices
-                  .filter(device => device.type === 'input')
-                  .map(device => (
-                    <option key={device.id} value={device.name}>
-                      {device.name}
-                    </option>
-                  ))}
-              </select>
-              
-              <div className="form-group mt-2">
-                <label className="form-label">Microphone Volume: {settings.micVolume}%</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={settings.micVolume}
-                  onChange={(e) => setSettings(prev => ({ 
-                    ...prev, 
-                    micVolume: parseInt(e.target.value) 
-                  }))}
-                />
+                <Label htmlFor="enableSystemAudio" className="font-medium flex items-center gap-2">
+                  <Speaker className="h-4 w-4" />
+                  Capture System Audio (Desktop sounds, music, etc.)
+                </Label>
               </div>
 
-              <button type="button" className="btn btn-secondary mt-2">
-                🎤 Test Microphone
-              </button>
-            </div>
-          )}
-        </div>
-
-        {settings.enableSystemAudio && settings.enableMicAudio && (
-          <div className="form-group">
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="mixMicWithSystem"
-                checked={settings.mixMicWithSystem}
-                onChange={(e) => setSettings(prev => ({ 
-                  ...prev, 
-                  mixMicWithSystem: e.target.checked 
-                }))}
-              />
-              <label htmlFor="mixMicWithSystem">
-                Mix microphone with system audio (single audio track)
-              </label>
-            </div>
-            <small className="text-muted">
-              Disable this if you want separate audio tracks for editing
-            </small>
-          </div>
-        )}
-      </div>
-
-      <div className="card">
-        <h4>Audio Quality</h4>
-        
-        <div className="form-group">
-          <label className="form-label">Audio Codec</label>
-          <select className="form-control form-select" value="aac" disabled>
-            <option value="aac">AAC (Recommended)</option>
-          </select>
-          <small className="text-muted">
-            AAC provides the best compression and compatibility
-          </small>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Audio Bitrate</label>
-          <select
-            className="form-control form-select"
-            value={settings.aacBitrateKbps}
-            onChange={(e) => setSettings(prev => ({ 
-              ...prev, 
-              aacBitrateKbps: parseInt(e.target.value) 
-            }))}
-          >
-            <option value={128}>128 kbps (Good for voice)</option>
-            <option value={160}>160 kbps (Recommended)</option>
-            <option value={192}>192 kbps (High quality)</option>
-            <option value={256}>256 kbps (Maximum quality)</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="card">
-        <h4>Audio Device Information</h4>
-        <div className="device-list">
-          {audioDevices.map(device => (
-            <div key={device.id} className="device-item">
-              <div className="device-info">
-                <div className="device-name">{device.name}</div>
-                <div className="device-type">
-                  {device.type === 'input' ? '🎤 Input Device' : '🔊 Output Device'}
+              {settings.enableSystemAudio && (
+                <div className="ml-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>System Audio Device</Label>
+                    <Select
+                      value={settings.systemDevice}
+                      onValueChange={(value) => setSettings(prev => ({ 
+                        ...prev, 
+                        systemDevice: value 
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {audioDevices
+                          .filter(device => device.type === 'output')
+                          .map(device => (
+                            <SelectItem key={device.id} value={device.name}>
+                              {device.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>System Audio Volume: {systemVolume[0]}%</Label>
+                    <Slider
+                      value={systemVolume}
+                      onValueChange={(value) => {
+                        setSystemVolume(value);
+                        setSettings(prev => ({ 
+                          ...prev, 
+                          systemVolume: value[0] 
+                        }));
+                      }}
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-          ))}
-        </div>
-        <button type="button" className="btn btn-secondary mt-2">
-          🔄 Refresh Device List
-        </button>
-      </div>
 
-      <div className="form-group">
-        <button type="button" className="btn btn-primary">
-          Save Audio Settings
-        </button>
-        <button type="button" className="btn btn-secondary" style={{ marginLeft: '1rem' }}>
-          Test Audio Capture
-        </button>
-      </div>
-    </div>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enableMicAudio"
+                  checked={settings.enableMicAudio}
+                  onCheckedChange={(checked) => setSettings(prev => ({ 
+                    ...prev, 
+                    enableMicAudio: !!checked 
+                  }))}
+                />
+                <Label htmlFor="enableMicAudio" className="font-medium flex items-center gap-2">
+                  <Mic className="h-4 w-4" />
+                  Capture Microphone (Your voice, commentary)
+                </Label>
+              </div>
+
+              {settings.enableMicAudio && (
+                <div className="ml-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Microphone Device</Label>
+                    <Select
+                      value={settings.micDevice}
+                      onValueChange={(value) => setSettings(prev => ({ 
+                        ...prev, 
+                        micDevice: value 
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {audioDevices
+                          .filter(device => device.type === 'input')
+                          .map(device => (
+                            <SelectItem key={device.id} value={device.name}>
+                              {device.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Microphone Volume: {micVolume[0]}%</Label>
+                    <Slider
+                      value={micVolume}
+                      onValueChange={(value) => {
+                        setMicVolume(value);
+                        setSettings(prev => ({ 
+                          ...prev, 
+                          micVolume: value[0] 
+                        }));
+                      }}
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+
+                  <Button variant="outline">
+                    <Mic className="h-4 w-4 mr-2" />
+                    Test Microphone
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {settings.enableSystemAudio && settings.enableMicAudio && (
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="mixMicWithSystem"
+                    checked={settings.mixMicWithSystem}
+                    onCheckedChange={(checked) => setSettings(prev => ({ 
+                      ...prev, 
+                      mixMicWithSystem: !!checked 
+                    }))}
+                  />
+                  <Label htmlFor="mixMicWithSystem" className="text-sm font-normal">
+                    Mix microphone with system audio (single audio track)
+                  </Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Disable this if you want separate audio tracks for editing
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Audio Quality</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Audio Codec</Label>
+              <Select value="aac" disabled>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="aac">AAC (Recommended)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground">
+                AAC provides the best compression and compatibility
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Audio Bitrate</Label>
+              <Select
+                value={settings.aacBitrateKbps.toString()}
+                onValueChange={(value) => setSettings(prev => ({ 
+                  ...prev, 
+                  aacBitrateKbps: parseInt(value) 
+                }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="128">128 kbps (Good for voice)</SelectItem>
+                  <SelectItem value="160">160 kbps (Recommended)</SelectItem>
+                  <SelectItem value="192">192 kbps (High quality)</SelectItem>
+                  <SelectItem value="256">256 kbps (Maximum quality)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex gap-4 pt-4">
+          <Button>Save Audio Settings</Button>
+          <Button variant="outline">Reset to Defaults</Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

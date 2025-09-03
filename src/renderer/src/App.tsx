@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Monitor, Settings } from 'lucide-react';
 
-// Import components that we'll create
+// Import components
 import SettingsTabs from './components/SettingsTabs';
 import RecordingStatus from './components/RecordingStatus';
 
@@ -79,13 +82,38 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="app">
-      <div className="app-header">
-        <h1>Sideo - Screen Recorder</h1>
-        <div className="version">v0.1.0</div>
-      </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Monitor className="h-6 w-6 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold">Sideo</h1>
+                <p className="text-sm text-muted-foreground">Screen Recorder</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <Badge variant="secondary">v0.1.0</Badge>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setAppState(prev => ({
+                  ...prev, 
+                  currentView: prev.currentView === 'settings' ? 'status' : 'settings'
+                }))}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                {appState.currentView === 'settings' ? 'Status' : 'Settings'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
 
-      <main className="app-main">
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-6">
         {appState.currentView === 'status' && (
           <RecordingStatus
             isRecording={appState.isRecording}
@@ -100,22 +128,23 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="app-footer">
-        <p>Open-source screen recording application for Windows 11</p>
-        <div className="footer-links">
-          <a href="#" onClick={(e) => {
-            e.preventDefault();
-            // TODO: Open GitHub repository
-          }}>
-            GitHub
-          </a>
-          <span>•</span>
-          <a href="#" onClick={(e) => {
-            e.preventDefault();
-            // TODO: Open documentation
-          }}>
-            Documentation
-          </a>
+      {/* Footer */}
+      <footer className="border-t bg-card mt-8">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              Open-source screen recording application for Windows 11
+            </p>
+            <div className="flex items-center gap-4 text-sm">
+              <Button variant="link" size="sm" className="h-auto p-0">
+                GitHub
+              </Button>
+              <span className="text-muted-foreground">•</span>
+              <Button variant="link" size="sm" className="h-auto p-0">
+                Documentation
+              </Button>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

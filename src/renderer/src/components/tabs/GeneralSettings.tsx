@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { FolderOpen, Folder } from 'lucide-react';
 
 const GeneralSettings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -35,155 +42,149 @@ const GeneralSettings: React.FC = () => {
   };
 
   return (
-    <div className="settings-section">
-      <div className="card-header">
-        <h3 className="card-title">General Settings</h3>
-        <p className="card-description">
+    <Card>
+      <CardHeader>
+        <CardTitle>General Settings</CardTitle>
+        <CardDescription>
           Configure output location, file naming, and basic application behavior
-        </p>
-      </div>
-
-      <div className="form-group">
-        <label className="form-label">Output Folder</label>
-        <div className="path-input-group">
-          <input
-            type="text"
-            className="form-control path-input"
-            value={settings.outputFolder}
-            readOnly
-          />
-          <button
-            type="button"
-            className="btn btn-secondary browse-button"
-            onClick={handleOutputFolderChange}
-          >
-            Browse
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary browse-button"
-            onClick={openRecordingsFolder}
-          >
-            Open
-          </button>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="output-folder">Output Folder</Label>
+          <div className="flex gap-2">
+            <Input
+              id="output-folder"
+              value={settings.outputFolder}
+              readOnly
+              className="flex-1"
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleOutputFolderChange}
+            >
+              <Folder className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={openRecordingsFolder}
+            >
+              <FolderOpen className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Where your recordings will be saved
+          </p>
         </div>
-        <small className="text-muted">
-          Where your recordings will be saved
-        </small>
-      </div>
 
-      <div className="settings-row">
-        <div className="settings-col">
-          <div className="form-group">
-            <label className="form-label">Filename Template</label>
-            <input
-              type="text"
-              className="form-control"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="filename-template">Filename Template</Label>
+            <Input
+              id="filename-template"
               value={settings.filenameTemplate}
               onChange={(e) => setSettings(prev => ({ 
                 ...prev, 
                 filenameTemplate: e.target.value 
               }))}
             />
-            <small className="text-muted">
+            <p className="text-sm text-muted-foreground">
               Available variables: {'{date}'}, {'{time}'}, {'{profile}'}
-            </small>
+            </p>
           </div>
-        </div>
 
-        <div className="settings-col">
-          <div className="form-group">
-            <label className="form-label">Container Format</label>
-            <select
-              className="form-control form-select"
+          <div className="space-y-2">
+            <Label htmlFor="container-format">Container Format</Label>
+            <Select
               value={settings.containerFormat}
-              onChange={(e) => setSettings(prev => ({ 
+              onValueChange={(value) => setSettings(prev => ({ 
                 ...prev, 
-                containerFormat: e.target.value 
+                containerFormat: value 
               }))}
             >
-              <option value="mkv">MKV (Recommended - More reliable)</option>
-              <option value="mp4">MP4 (More compatible)</option>
-            </select>
-            <small className="text-muted">
+              <SelectTrigger id="container-format">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mkv">MKV (Recommended - More reliable)</SelectItem>
+                <SelectItem value="mp4">MP4 (More compatible)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
               MKV is safer for long recordings
-            </small>
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="form-group">
-        <label className="form-label">Global Hotkey (Start/Stop Recording)</label>
-        <input
-          type="text"
-          className="form-control hotkey-input"
-          value={settings.hotkeyStartStop}
-          readOnly
-          placeholder="Click to set hotkey"
-        />
-        <small className="text-muted">
-          Current: Ctrl+Alt+R (Click to change)
-        </small>
-      </div>
-
-      <div className="form-group">
-        <h4>Application Behavior</h4>
-        
-        <div className="form-check">
-          <input
-            type="checkbox"
-            id="showNotifications"
-            checked={settings.showNotifications}
-            onChange={(e) => setSettings(prev => ({ 
-              ...prev, 
-              showNotifications: e.target.checked 
-            }))}
+        <div className="space-y-2">
+          <Label htmlFor="hotkey">Global Hotkey (Start/Stop Recording)</Label>
+          <Input
+            id="hotkey"
+            value={settings.hotkeyStartStop}
+            readOnly
+            placeholder="Click to set hotkey"
           />
-          <label htmlFor="showNotifications">
-            Show notifications when starting/stopping recordings
-          </label>
+          <p className="text-sm text-muted-foreground">
+            Current: Ctrl+Alt+R (Click to change)
+          </p>
         </div>
 
-        <div className="form-check">
-          <input
-            type="checkbox"
-            id="minimizeToTray"
-            checked={settings.minimizeToTrayOnStart}
-            onChange={(e) => setSettings(prev => ({ 
-              ...prev, 
-              minimizeToTrayOnStart: e.target.checked 
-            }))}
-          />
-          <label htmlFor="minimizeToTray">
-            Start minimized to system tray
-          </label>
+        <div className="space-y-4">
+          <h4 className="text-lg font-medium">Application Behavior</h4>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="showNotifications"
+                checked={settings.showNotifications}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  showNotifications: !!checked 
+                }))}
+              />
+              <Label htmlFor="showNotifications" className="text-sm font-normal">
+                Show notifications when starting/stopping recordings
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="minimizeToTray"
+                checked={settings.minimizeToTrayOnStart}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  minimizeToTrayOnStart: !!checked 
+                }))}
+              />
+              <Label htmlFor="minimizeToTray" className="text-sm font-normal">
+                Start minimized to system tray
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="preventSleep"
+                checked={settings.preventSleepWhileRecording}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  preventSleepWhileRecording: !!checked 
+                }))}
+              />
+              <Label htmlFor="preventSleep" className="text-sm font-normal">
+                Prevent system sleep while recording
+              </Label>
+            </div>
+          </div>
         </div>
 
-        <div className="form-check">
-          <input
-            type="checkbox"
-            id="preventSleep"
-            checked={settings.preventSleepWhileRecording}
-            onChange={(e) => setSettings(prev => ({ 
-              ...prev, 
-              preventSleepWhileRecording: e.target.checked 
-            }))}
-          />
-          <label htmlFor="preventSleep">
-            Prevent system sleep while recording
-          </label>
+        <div className="flex gap-4 pt-4">
+          <Button>Save General Settings</Button>
+          <Button variant="outline">Reset to Defaults</Button>
         </div>
-      </div>
-
-      <div className="form-group">
-        <button type="button" className="btn btn-primary">
-          Save General Settings
-        </button>
-        <button type="button" className="btn btn-secondary" style={{ marginLeft: '1rem' }}>
-          Reset to Defaults
-        </button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

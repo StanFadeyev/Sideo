@@ -1,12 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-interface Tab {
-  id: string;
-  label: string;
-  component: React.ComponentType;
-}
-
-// Import tab components (we'll create these)
+// Import tab components
 import GeneralSettings from './tabs/GeneralSettings';
 import VideoSettings from './tabs/VideoSettings';
 import AudioSettings from './tabs/AudioSettings';
@@ -14,7 +9,13 @@ import ProfileSettings from './tabs/ProfileSettings';
 import AISettings from './tabs/AISettings';
 import AdvancedSettings from './tabs/AdvancedSettings';
 
-const tabs: Tab[] = [
+interface TabItem {
+  id: string;
+  label: string;
+  component: React.ComponentType;
+}
+
+const tabs: TabItem[] = [
   { id: 'general', label: 'General', component: GeneralSettings },
   { id: 'video', label: 'Video', component: VideoSettings },
   { id: 'audio', label: 'Audio', component: AudioSettings },
@@ -24,30 +25,26 @@ const tabs: Tab[] = [
 ];
 
 const SettingsTabs: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('general');
-
-  const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component;
-
   return (
-    <div className="settings-container">
-      <div className="tabs">
-        <ul className="tab-list">
+    <div className="w-full max-w-4xl mx-auto p-6">
+      <Tabs defaultValue="general" className="w-full">
+        <TabsList className="grid w-full grid-cols-6">
           {tabs.map(tab => (
-            <li key={tab.id} className="tab-item">
-              <button
-                className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            </li>
+            <TabsTrigger key={tab.id} value={tab.id} className="text-sm">
+              {tab.label}
+            </TabsTrigger>
           ))}
-        </ul>
-      </div>
-
-      <div className="tab-content">
-        {ActiveComponent && <ActiveComponent />}
-      </div>
+        </TabsList>
+        
+        {tabs.map(tab => {
+          const Component = tab.component;
+          return (
+            <TabsContent key={tab.id} value={tab.id} className="mt-6">
+              <Component />
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </div>
   );
 };
